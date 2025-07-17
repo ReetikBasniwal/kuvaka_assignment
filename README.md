@@ -2,6 +2,10 @@
 
 This project is a modern React application bootstrapped with Vite and TypeScript. It features OTP-based authentication, a chat interface with simulated AI responses, image sharing, and a clean, responsive UI. The app demonstrates best practices in state management, component design, and user experience, using localStorage for persistence and custom hooks for modularity.
 
+# Live Demo
+
+[Try the app here!](https://geminiaichatapp.netlify.app/)
+
 # Setup and Run Instructions
 
 1. **Clone the repository:**
