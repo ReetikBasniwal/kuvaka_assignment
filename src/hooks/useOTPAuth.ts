@@ -61,11 +61,21 @@ export function useOTPAuth() {
     localStorage.removeItem('otpUser')
     sessionStorage.removeItem('otp')
     sessionStorage.removeItem('otpPhone')
+
+    const keys = Object.keys(localStorage)
+    keys.forEach(key => {
+      if (key.startsWith('chatrooms_') || key.startsWith('messages_')) {
+        localStorage.removeItem(key)
+      }
+    })
+
     setAuthState({
       user: null,
       isLoading: false,
       isAuthenticated: false
     })
+
+    window.location.reload()
   }
 
   return {

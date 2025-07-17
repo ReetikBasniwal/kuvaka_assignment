@@ -11,8 +11,7 @@ function App() {
   if (isLoading) {
     return <LoadingScreen />
   }
-
-  console.log(isAuthenticated,user,"user" );
+  
   if (!isAuthenticated || !user) {
     return <OTPAuth onAuthenticated={login} />
   }
