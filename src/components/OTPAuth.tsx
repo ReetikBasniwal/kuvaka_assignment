@@ -15,10 +15,11 @@ interface OTPAuthProps {
 export function OTPAuth({ onAuthenticated }: OTPAuthProps) {
   const { toast } = useToast()
   const [countries, setCountries] = useState<Country[]>([])
+  const [countrySearch, setCountrySearch] = useState('');
   const [otpState, setOtpState] = useState<OTPState>({
     step: 'phone',
     phone: '',
-    countryCode: '+1',
+    countryCode: '',
     otp: '',
     isLoading: false,
     error: null,
@@ -77,6 +78,9 @@ export function OTPAuth({ onAuthenticated }: OTPAuthProps) {
   const sendOTP = async () => {
     if (!otpState.phone.trim()) {
       setOtpState(prev => ({ ...prev, error: 'Please enter a valid phone number' }))
+      return
+    }else if (otpState.countryCode === '') {
+      setOtpState(prev => ({ ...prev, error: 'Please select a country code' }))
       return
     }
 
@@ -177,6 +181,11 @@ export function OTPAuth({ onAuthenticated }: OTPAuthProps) {
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
+  const filteredCountries = countries.filter(country =>
+    country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    country.dialCode.includes(countrySearch)
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
@@ -210,11 +219,19 @@ export function OTPAuth({ onAuthenticated }: OTPAuthProps) {
                     value={otpState.countryCode}
                     onValueChange={(value) => setOtpState(prev => ({ ...prev, countryCode: value }))}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className='mt-1 w-[180px]'>
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
-                      {countries.map((country) => (
+                      <div className="p-2">
+                        <Input
+                          placeholder="Search country"
+                          value={countrySearch}
+                          onChange={e => setCountrySearch(e.target.value)}
+                          className="mb-2"
+                        />
+                      </div>
+                      {filteredCountries.map((country) => (
                         <SelectItem key={country.code} value={country.dialCode}>
                           <div className="flex items-center space-x-2">
                             <span>{country.flag}</span>
@@ -229,7 +246,7 @@ export function OTPAuth({ onAuthenticated }: OTPAuthProps) {
 
                 <div>
                   <Label htmlFor="phone">Phone Number</Label>
-                  <div className="flex">
+                  <div className="flex mt-1">
                     <div className="flex items-center px-3 bg-gray-50 dark:bg-gray-700 border border-r-0 rounded-l-md">
                       <span className="text-sm text-gray-600 dark:text-gray-300">
                         {otpState.countryCode}
